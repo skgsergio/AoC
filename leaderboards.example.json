@@ -1,0 +1,15 @@
+{
+  "tz": "Europe/Madrid",
+  "leaderboards": {
+    "leet_aoc19": {
+      "id": 1337,
+      "year": 2019,
+      "session": "7e9ea88a050af0564ffe2e5ed032a8b1759504546f917997930fae9edb92c32caf7971cf555a9b42ce474b4464e833ca6b90660519db42b2b6139bc88ebae59e"
+    },
+    "leet_aoc21": {
+      "id": 1337,
+      "year": 2021,
+      "session": "7e9ea88a050af0564ffe2e5ed032a8b1759504546f917997930fae9edb92c32caf7971cf555a9b42ce474b4464e833ca6b90660519db42b2b6139bc88ebae59e"
+    }
+  }
+}
