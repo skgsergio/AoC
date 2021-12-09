@@ -3,6 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"image"
+	"image/color"
+	"image/png"
 	"os"
 	"strconv"
 	"strings"
@@ -91,7 +94,44 @@ func solve(lines []Line, diagonals bool) int {
 		}
 	}
 
+	// Plot!
+	plot(seenPoints, image.Rect(0, 0, 1000, 1000), 1, diagonals)
+
 	return overlaped
+}
+
+func plot(points map[Point]int, size image.Rectangle, scale int, diagonals bool) {
+	img := image.NewRGBA(image.Rectangle{size.Min.Mul(scale), size.Max.Mul(scale)})
+
+	for x := img.Rect.Min.X; x <= img.Rect.Max.X; x++ {
+		for y := img.Rect.Min.Y; y <= img.Rect.Max.Y; y++ {
+			img.Set(x, y, color.White)
+		}
+	}
+
+	for pt, count := range points {
+		c := color.RGBA{230, 230, 230, 255}
+		if count > 1 {
+			c = color.RGBA{255, 0, 0, 255}
+		}
+
+		for xs := 0; xs < scale; xs++ {
+			for ys := 0; ys < scale; ys++ {
+				img.Set((pt.x*scale)+xs, (pt.y*scale)+ys, c)
+			}
+		}
+	}
+
+	fname := "plot_without_diagonals.png"
+	if diagonals {
+		fname = "plot_with_diagonals.png"
+	}
+	f, err := os.Create(fname)
+	panicOnErr(err)
+
+	png.Encode(f, img)
+
+	f.Close()
 }
 
 func parsePoint(point string) Point {
