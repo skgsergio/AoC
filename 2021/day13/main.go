@@ -40,10 +40,10 @@ func (fold *Point) FoldDot(dot Point) Point {
 	return foldedDot
 }
 
-func drawDots(points map[Point]bool) string {
+func drawDots(dots map[Point]bool) string {
 	// Search max dimension
 	max := Point{0, 0}
-	for p := range points {
+	for p := range dots {
 		if p.x > max.x {
 			max.x = p.x
 		}
@@ -58,7 +58,7 @@ func drawDots(points map[Point]bool) string {
 		row := ""
 
 		for x := 0; x <= max.x; x++ {
-			if points[Point{x, y}] {
+			if dots[Point{x, y}] {
 				row += "█"
 			} else {
 				row += "░"
