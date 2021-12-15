@@ -68,20 +68,15 @@ func polimerization(template string, rules map[Pair]Element, steps int) int {
 	// and find the max and min counts.
 	counts := map[Element]int{}
 	for pair, count := range pairs {
-		counts[pair[0]] += count
-		counts[pair[1]] += count
-	}
-
-	max, min := math.MinInt, math.MaxInt
-	for element, count := range counts {
-		if element.IsEdge() {
+		if pair[0].IsEdge() {
 			continue
 		}
 
-		// As Pairs overlap we need to divide the values
-		// by 2 as we are counting elements twice.
-		count /= 2
+		counts[pair[0]] += count
+	}
 
+	max, min := math.MinInt, math.MaxInt
+	for _, count := range counts {
 		if count < min {
 			min = count
 		}
