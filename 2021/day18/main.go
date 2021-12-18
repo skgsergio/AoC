@@ -36,6 +36,14 @@ func (n *Node) IsPair() bool {
 	return !n.IsLeaf() && n.left.IsLeaf() && n.right.IsLeaf()
 }
 
+func (n *Node) String() string {
+	if n.IsLeaf() {
+		return fmt.Sprintf("%d", n.value)
+	}
+
+	return fmt.Sprintf("[%s,%s]", n.left, n.right)
+}
+
 func parse(line string, chr int) (*Node, int) {
 	if line[chr] == '[' {
 		l, chr := parse(line, chr+1)
