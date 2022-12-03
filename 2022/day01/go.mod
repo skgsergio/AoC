@@ -1,4 +1,4 @@
-module aoc21day01skgsergio
+module aoc22day01skgsergio
 
 go 1.19
 
