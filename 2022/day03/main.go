@@ -31,13 +31,11 @@ func toSet(items string) map[rune]struct{} {
 }
 
 func priority(item rune) int {
-	value := item - 0x60
-
-	if value < 0 {
-		value = 26 + (item - 0x40)
+	if item >= 'a' {
+		return int(1 + item - 'a')
 	}
 
-	return int(value)
+	return int(27 + item - 'A')
 }
 
 func solve(input *os.File) (int, int) {
