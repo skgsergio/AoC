@@ -110,6 +110,20 @@ func (d *Dir) Cd(path string) (*Dir, error) {
 	return nil, fmt.Errorf("subdirectory '%s' not found in directory '%s'", path, d.name)
 }
 
+func (d *Dir) Print(prefix string) string {
+	p := fmt.Sprintf("[D:%d] %s\n", d.Size(), d.name)
+
+	for _, f := range d.files {
+		p += fmt.Sprintf("%s|- [F:%d] %s\n", prefix, f.Size(), f.Name())
+	}
+
+	for _, s := range d.subDirs {
+		p += fmt.Sprintf("%s|- %s", prefix, s.Print(fmt.Sprintf("%s|  ", prefix)))
+	}
+
+	return p
+}
+
 func ParseTermOutput(stdout string) *Dir {
 	var err error = nil
 
@@ -193,6 +207,7 @@ func solve(input *os.File) (int, int) {
 	panicOnErr(err)
 
 	fs := ParseTermOutput(string(inputBytes))
+	fmt.Println(fs.Print(""))
 
 	// Part 1
 	maxSize := 100000
