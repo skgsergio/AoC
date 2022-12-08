@@ -35,7 +35,11 @@ func (p *Point) Add(q Point) Point {
 
 func plot(points map[Point]int, scale int, name string) {
 	// Gradient based on DarkMint CARTOColors
-	colorsHex := []string{"D2FBD4", "BDE6C6", "A7D1B9", "92BCAB", "7DA79E", "679390", "527E83", "3D6975", "275468", "123F5A"}
+	colorsHex := []string{
+		"D2FBD4", "BDE6C6", "A7D1B9", "92BCAB", "7DA79E",
+		"679390", "527E83", "3D6975", "275468", "123F5A",
+		"FF0000",
+	}
 
 	// Convert HEX colors to RGBA
 	colors := make([]color.RGBA, len(colorsHex))
@@ -45,20 +49,19 @@ func plot(points map[Point]int, scale int, name string) {
 		colors[idx] = color.RGBA{b[0], b[1], b[2], 255}
 	}
 
-	// Find max size
-	size := Point{0, 0}
-
+	// Find max max
+	max := Point{0, 0}
 	for p := range points {
-		if p.x > size.x {
-			size.x = p.x
+		if p.x > max.x {
+			max.x = p.x
 		}
-		if p.y > size.y {
-			size.y = p.y
+		if p.y > max.y {
+			max.y = p.y
 		}
 	}
 
 	// Create canvas initializing all points to White
-	img := image.NewRGBA(image.Rect(0, 0, size.x*scale, size.y*scale))
+	img := image.NewRGBA(image.Rect(0, 0, (max.x+1)*scale, (max.y+1)*scale))
 	for x := img.Rect.Min.X; x <= img.Rect.Max.X; x++ {
 		for y := img.Rect.Min.Y; y <= img.Rect.Max.Y; y++ {
 			img.Set(x, y, color.White)
@@ -106,7 +109,7 @@ func solve(input *os.File) (int, int) {
 	}
 	panicOnErr(scanner.Err())
 
-	plot(patch, 4, "patch")
+	visibleTrees := map[Point]int{} // Just for ploting purposes
 
 	dirs := []Point{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
 	for currTree, currHeight := range patch {
@@ -131,6 +134,7 @@ func solve(input *os.File) (int, int) {
 		}
 
 		if visible {
+			visibleTrees[currTree] = currHeight
 			s1 += 1
 		}
 
@@ -138,6 +142,17 @@ func solve(input *os.File) (int, int) {
 			s2 = score
 		}
 	}
+
+	plot(patch, 4, "patch")
+	plot(visibleTrees, 4, "visible")
+	combined := map[Point]int{}
+	for tree, height := range patch {
+		combined[tree] = height
+		if _, visible := visibleTrees[tree]; visible {
+			combined[tree] = 10
+		}
+	}
+	plot(combined, 4, "combined")
 
 	return s1, s2
 }
