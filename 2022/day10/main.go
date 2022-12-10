@@ -22,6 +22,77 @@ func panicOnErr(err error) {
 	}
 }
 
+type CPU struct {
+	instructions     [][]string
+	registersInitial map[string]int
+
+	pc    int
+	cycle int
+
+	registers map[string]int
+
+	pipeline struct {
+		cyclesRemaining int
+		register        string
+		data            int
+	}
+}
+
+func NewCPU(program string, registersInitial map[string]int) *CPU {
+	cpu := &CPU{
+		instructions:     [][]string{},
+		registersInitial: map[string]int{},
+	}
+
+	for _, instr := range strings.Split(strings.TrimSpace(program), "\n") {
+		cpu.instructions = append(cpu.instructions, strings.Split(instr, " "))
+	}
+
+	for reg, val := range registersInitial {
+		cpu.registersInitial[reg] = val
+	}
+
+	cpu.Reset()
+
+	return cpu
+}
+
+func (c *CPU) Reset() {
+	c.pc = 0
+	c.cycle = 1
+
+	c.registers = map[string]int{}
+	for reg, val := range c.registersInitial {
+		c.registers[reg] = val
+	}
+}
+
+func (c *CPU) Run(cycleEvalFn func(int, map[string]int)) {
+	for c.pc < len(c.instructions) || c.pipeline.cyclesRemaining > 0 {
+		cycleEvalFn(c.cycle, c.registers)
+
+		c.pipeline.cyclesRemaining -= 1
+
+		if c.pipeline.cyclesRemaining == 0 {
+			c.registers[c.pipeline.register] += c.pipeline.data
+		} else {
+			switch c.instructions[c.pc][0] {
+			case "addx":
+				num, err := strconv.Atoi(c.instructions[c.pc][1])
+				panicOnErr(err)
+
+				c.pipeline.register = "x"
+				c.pipeline.cyclesRemaining = 1
+				c.pipeline.data = num
+			}
+
+			c.pc += 1
+		}
+
+		c.cycle += 1
+	}
+}
+
 func solve(input *os.File) (int, string) {
 	s1 := 0
 	s2 := ""
@@ -29,16 +100,12 @@ func solve(input *os.File) (int, string) {
 	inputBytes, err := ioutil.ReadAll(input)
 	panicOnErr(err)
 
-	instructions := strings.Split(strings.TrimSpace(string(inputBytes)), "\n")
+	cpu := NewCPU(
+		string(inputBytes),
+		map[string]int{"x": 1},
+	)
 
-	pc := 0
-	cycle := 1
-	xReg := 1
-
-	addxRdy := false
-	addxVal := 0
-
-	for pc < len(instructions) || addxRdy {
+	cpu.Run(func(cycle int, registers map[string]int) {
 		// Part 2
 		xPos := (cycle - 1) % 40
 
@@ -46,7 +113,7 @@ func solve(input *os.File) (int, string) {
 			s2 += "\n"
 		}
 
-		if xReg-1 <= xPos && xPos <= xReg+1 {
+		if registers["x"]-1 <= xPos && xPos <= registers["x"]+1 {
 			s2 += "█"
 		} else {
 			s2 += " "
@@ -54,27 +121,10 @@ func solve(input *os.File) (int, string) {
 
 		// Part 1
 		if cycle == 20 || (cycle-20)%40 == 0 {
-			s1 += xReg * cycle
+			s1 += registers["x"] * cycle
 		}
 
-		if addxRdy {
-			xReg += addxVal
-			addxRdy = false
-		} else {
-			instr := strings.Split(instructions[pc], " ")
-			pc += 1
-
-			if instr[0] == "addx" {
-				num, err := strconv.Atoi(instr[1])
-				panicOnErr(err)
-
-				addxVal = num
-				addxRdy = true
-			}
-		}
-
-		cycle += 1
-	}
+	})
 
 	return s1, s2
 }
