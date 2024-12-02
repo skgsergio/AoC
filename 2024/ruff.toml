@@ -1,0 +1,17 @@
+target-version = "py312"
+line-length = 120
+
+[lint]
+preview = true
+select = ["ALL"]
+ignore = [
+    # I don't care about docs in AoC
+    "D",
+    # Prints are allowed in AoC
+    "T20",
+    # Magic values are going to happen in AoC
+    "PLR2004",
+]
+
+[format]
+preview = true
