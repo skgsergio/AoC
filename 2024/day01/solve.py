@@ -51,12 +51,12 @@ def solve(file_io: TextIO, star: Star = Star.ALL) -> None:
     left_list.sort()
     right_list.sort()
 
-    if star in [star.ALL, star.ONE]:
+    if star in {star.ALL, star.ONE}:
         s1 = sum(abs(left - right) for left, right in zip(left_list, right_list, strict=True))
 
         print(f"Star 1: {s1}")
 
-    if star in [star.ALL, star.TWO]:
+    if star in {star.ALL, star.TWO}:
         # Assuming left values do not repeat a lot so not caching count() result in a dict
         s2 = sum(left * right_list.count(left) for left in left_list)
 

@@ -43,12 +43,12 @@ def solve(file_io: TextIO, star: Star = Star.ALL) -> None:
     for line in file_io:
         print(line)
 
-    if star in [star.ALL, star.ONE]:
+    if star in {star.ALL, star.ONE}:
         s1 = 0
 
         print(f"Star 1: {s1}")
 
-    if star in [star.ALL, star.TWO]:
+    if star in {star.ALL, star.TWO}:
         s2 = 0
 
         print(f"Star 2: {s2}")

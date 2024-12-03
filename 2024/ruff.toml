@@ -11,6 +11,8 @@ ignore = [
     "T20",
     # Magic values are going to happen in AoC
     "PLR2004",
+    # Copyright? xD
+    "CPY",
 ]
 
 [format]

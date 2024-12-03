@@ -58,12 +58,12 @@ def safe_with_dampen(report: list[int]) -> bool:
 def solve(file_io: TextIO, star: Star = Star.ALL) -> None:
     reports: list[list[int]] = [[int(n) for n in line.split()] for line in file_io]
 
-    if star in [star.ALL, star.ONE]:
+    if star in {star.ALL, star.ONE}:
         s1 = sum(safe(report) for report in reports)
 
         print(f"Star 1: {s1}")
 
-    if star in [star.ALL, star.TWO]:
+    if star in {star.ALL, star.TWO}:
         s2 = sum(safe_with_dampen(report) for report in reports)
 
         print(f"Star 2: {s2}")
