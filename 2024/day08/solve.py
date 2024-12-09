@@ -62,7 +62,7 @@ class Point(NamedTuple):
         return Point(-self.x, -self.y)
 
 
-def solve(file_io: TextIO, star: Star = Star.ALL) -> None:  # noqa: C901
+def solve(file_io: TextIO, star: Star = Star.ALL) -> None:
     frequencies: dict[str, list[Point]] = defaultdict(list)
 
     for y, line in enumerate(file_io):

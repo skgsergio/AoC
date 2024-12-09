@@ -13,6 +13,8 @@ ignore = [
     "PLR2004",
     # Copyright? xD
     "CPY",
+    # Code complexity goes brrr in AoC
+    "C901", "PLR0912",
 ]
 
 [format]
